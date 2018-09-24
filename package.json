@@ -1,0 +1,9 @@
+{
+  "name": "Getter Socks proxy",
+  "description": "Simple Js Parser for spys.one",
+  "version": "1.0",
+  "dependencies": {
+    "http": "latest",
+    "zombie": "latest"
+  }
+}
