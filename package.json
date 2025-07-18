@@ -1,8 +1,23 @@
 {
   "name": "getter-proxy",
-  "description": "Simple Js Parser for spys.one",
-  "version": "1.0",
+  "description": "Node.js library for parsing and extracting fresh HTTP/HTTPS proxies from spys.one | Node.js библиотека для парсинга и извлечения свежих HTTP/HTTPS прокси с сайта spys.one",
+  "version": "1.0.0",
+  "main": "ProxyGetter.js",
+  "keywords": ["proxy", "scraper", "spys.one", "прокси", "парсер"],
+  "author": "",
+  "license": "MIT",
   "dependencies": {
     "zombie": "latest"
+  },
+  "scripts": {
+    "start": "node example.js",
+    "example": "node example.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "engines": {
+    "node": ">=12.0.0"
   }
 }

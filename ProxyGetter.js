@@ -1,10 +1,11 @@
 const Zombie = require('zombie');
 
 const startUrl = 'http://spys.one/proxylist/';
-// chrome 60
+// chrome 60 | хром 60
 const userAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36';
 const requestInterval = 1000 * 60 * 10;
 /**
+ * Gets open HTTP(S) proxies from spys.one website
  * Получает открытые http(s) прокси с сайта spys.one
  * @export
  * @class ProxyGetter
@@ -12,6 +13,7 @@ const requestInterval = 1000 * 60 * 10;
 module.exports = class ProxyGetter {
     /**
      * Creates an instance of ProxyGetter.
+     * Создает экземпляр ProxyGetter.
      * @memberof ProxyGetter
      */
     constructor() {
@@ -21,7 +23,10 @@ module.exports = class ProxyGetter {
         this.promise = this.requestForProxy();
     }
     /**
-     * Получение прокси
+     * Gets proxies from the website
+     * Runs _requestForProxyInner until it gets a result
+     * 
+     * Получение прокси с сайта
      * Запускает _requestForProxyInner пока не получит результат
      * @memberof ProxyGetter
      */
@@ -33,10 +38,13 @@ module.exports = class ProxyGetter {
     }
 
     /**
+     * Makes a request to spys.one and parses proxies
+     * Retrieved proxies are stored in this.proxyArray
+     * 
      * Запрос к spys.one и парсинг прокси
      * Полученные прокси записываются в this.proxyArray
      * 
-     * @return {Boolean} Успешно ли получены прокси
+     * @return {Boolean} Whether proxies were successfully retrieved | Успешно ли получены прокси
      * @memberof ProxyGetter
      */
     async _requestForProxyInner() {
@@ -48,6 +56,7 @@ module.exports = class ProxyGetter {
         }
 
         // b.visit may throw TagError if google analytics connect to the page
+        // b.visit может выбросить TagError если google analytics подключается к странице
         try {
             await b.visit(startUrl);
         } catch (err) {
@@ -56,19 +65,23 @@ module.exports = class ProxyGetter {
                 return false;
             }
         }
-        // удаляем все <script> со страницы после загрузки
+        // Remove all <script> tags from the page after loading
+        // Удаляем все <script> со страницы после загрузки
         const scripts = b.document.querySelectorAll("script");
         for (let script of scripts){
             script.remove();
         }
-        // удаляем все лишние надписи
+        // Remove all unnecessary text elements
+        // Удаляем все лишние надписи
         const els = b.document.querySelectorAll('.spy5');
         for (let el of els){
             el.remove();
         }
-        // находим таблицу с нужными нам данными
+        // Find the table with the data we need
+        // Находим таблицу с нужными нам данными
         const dataRows = b.document.querySelector('.spy1xx').parentNode.childNodes;
         // dataRows = Array.prototype.slice.call(dataRows);
+        // First two and last three rows are headers and footers that we don't need
         // Первые две и последние три строки -- заголовки и футеры, которые нам не интересны
         this.proxyArray = [];
         for (let i = 2; i < dataRows.length - 3; i++) {
@@ -80,8 +93,9 @@ module.exports = class ProxyGetter {
         return !this.isEmpty();
     }
     /**
-     * Получение прокси
-     * @return {String} Адрес прокси в формате http(s)://ip:port
+     * Gets a proxy from the array
+     * Получение прокси из массива
+     * @return {String} Proxy address in format http(s)://ip:port | Адрес прокси в формате http(s)://ip:port
      * @memberof ProxyGetter
      */
     getProxy() {
@@ -91,8 +105,11 @@ module.exports = class ProxyGetter {
         return null;
     }
     /**
+     * Returns true when this.proxyArray.length == 0
+     * Returns false when this.proxyArray.length > 0
+     * 
      * Возвращает true, когда this.proxyArray.length == 0
-     * false, когда this.proxyArray.length > 0
+     * Возвращает false, когда this.proxyArray.length > 0
      * @return {Boolean}
      * @memberof ProxyGetter
      */
